@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { IAudioMetadata, IPicture } from "music-metadata";
+import type {
+  IAudioMetadata,
+  ICommonTagsResult,
+  IPicture,
+} from "music-metadata";
 import {
   AudioLines,
   ArrowUpRight,
@@ -21,6 +25,7 @@ import {
   Layers,
 } from "lucide-react";
 import { bytes, display, duration, json, label } from "./metadata";
+import { commonMusicBrainzUrl, musicBrainzUrl } from "./musicbrainz";
 
 type Entry = {
   id: string;
@@ -102,7 +107,19 @@ function Player({ file }: { file: File }) {
     </div>
   );
 }
-function Value({ value, name }: { value: unknown; name: string }) {
+function Value({
+  value,
+  name,
+  common,
+  native = false,
+  index = 0,
+}: {
+  value: unknown;
+  name: string;
+  common?: ICommonTagsResult;
+  native?: boolean;
+  index?: number;
+}) {
   const [expanded, setExpanded] = useState(false);
   if (value instanceof Uint8Array)
     return (
@@ -121,7 +138,14 @@ function Value({ value, name }: { value: unknown; name: string }) {
     return (
       <div className="values">
         {value.map((v, i) => (
-          <Value key={i} value={v} name={name} />
+          <Value
+            key={i}
+            value={v}
+            name={name}
+            common={common}
+            native={native}
+            index={i}
+          />
         ))}
       </div>
     );
@@ -131,21 +155,58 @@ function Value({ value, name }: { value: unknown; name: string }) {
         {Object.entries(value).map(([key, v]) => (
           <div key={key}>
             <span className="muted">{label(key)}: </span>
-            <Value value={v} name={key} />
+            {native &&
+            name === "UFID" &&
+            key === "identifier" &&
+            "owner_identifier" in value &&
+            (value.owner_identifier === "http://musicbrainz.org" ||
+              value.owner_identifier === "https://musicbrainz.org") &&
+            v instanceof Uint8Array &&
+            musicBrainzUrl(
+              "musicbrainz_recordingid",
+              new TextDecoder().decode(v),
+            ) ? (
+              <Value
+                value={new TextDecoder().decode(v)}
+                name="musicbrainz_recordingid"
+              />
+            ) : (
+              <Value value={v} name={key} />
+            )}
           </div>
         ))}
       </div>
     );
-  return <span>{display(value, name)}</span>;
+  const idUrl = musicBrainzUrl(name, value, native);
+  const url = idUrl ?? (common && commonMusicBrainzUrl(name, common, index));
+  return (
+    <span>
+      {url ? (
+        <a
+          className="musicbrainz-link"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="View on MusicBrainz (opens in a new tab)"
+        >
+          {idUrl ?? display(value, name)}
+        </a>
+      ) : (
+        display(value, name)
+      )}
+    </span>
+  );
 }
 function TagTable({
   entries,
   query = "",
   native = false,
+  common,
 }: {
   entries: [string, unknown][];
   query?: string;
   native?: boolean;
+  common?: ICommonTagsResult;
 }) {
   const filtered = entries.filter(([key, value]) =>
     `${key} ${label(key)} ${display(value, key)}`
@@ -161,7 +222,7 @@ function TagTable({
             {!native && <code>{key}</code>}
           </div>
           <div className="tag-value">
-            <Value value={value} name={key} />
+            <Value value={value} name={key} common={common} native={native} />
           </div>
         </div>
       ))}
@@ -219,11 +280,25 @@ function Detail({ entry }: { entry: Entry }) {
         <Artwork picture={common.picture?.[0]} large />
         <div className="track-heading">
           <div className="eyebrow">YOUR AUDIO, DECODED</div>
-          <h2>{common.title || entry.file.name}</h2>
+          <h2>
+            {common.title ? (
+              <Value value={common.title} name="title" common={common} />
+            ) : (
+              entry.file.name
+            )}
+          </h2>
           <p>
-            {common.artist || "Unknown artist"}
+            {common.artist ? (
+              <Value value={common.artist} name="artist" common={common} />
+            ) : (
+              "Unknown artist"
+            )}
             <span className="dot">·</span>
-            {common.album || "Unknown album"}
+            {common.album ? (
+              <Value value={common.album} name="album" common={common} />
+            ) : (
+              "Unknown album"
+            )}
           </p>
           <div className="chips">
             <span>{format.container || "Audio"}</span>
@@ -329,6 +404,7 @@ function Detail({ entry }: { entry: Entry }) {
               </button>
             </div>
             <TagTable
+              common={common}
               entries={commonEntries.filter(([key]) =>
                 [
                   "title",
@@ -390,7 +466,7 @@ function Detail({ entry }: { entry: Entry }) {
           </>
         )}
         {section === "common" && (
-          <TagTable entries={commonEntries} query={query} />
+          <TagTable entries={commonEntries} query={query} common={common} />
         )}
         {section === "format" && (
           <TagTable entries={Object.entries(format)} query={query} />

@@ -696,6 +696,15 @@ h4 {
   overflow-wrap: anywhere;
   min-width: 0;
 }
+.musicbrainz-link {
+  text-decoration: underline;
+  text-decoration-color: #a58bb8;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.musicbrainz-link:hover {
+  color: #763bb0;
+}
 .values > div + div,
 .values > span + span {
   margin-top: 5px;
