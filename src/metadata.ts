@@ -29,6 +29,9 @@ export const labels: Record<string, string> = {
   musicbrainz_albumid: "MusicBrainz release ID",
   musicbrainz_artistid: "MusicBrainz artist ID",
   musicbrainz_albumartistid: "MusicBrainz album artist ID",
+  musicbrainz_releasegroupid: "MusicBrainz release group ID",
+  musicbrainz_workid: "MusicBrainz work ID",
+  musicbrainz_discid: "MusicBrainz disc ID",
   picture: "Embedded artwork",
 };
 export function label(key: string): string {

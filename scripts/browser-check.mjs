@@ -43,6 +43,51 @@ for (let i = 0; i < 4; i++) {
   await page.getByRole("button", { name: "Native tags", exact: true }).click();
   assert.ok(await page.locator(".native-group").count());
   await page.getByRole("button", { name: "Common tags", exact: true }).click();
+  if (i === 3) {
+    const row = (name) =>
+      page
+        .locator(".tag-row")
+        .filter({
+          has: page.locator("code", { hasText: new RegExp(`^${name}$`) }),
+        });
+    const recordingUrl =
+      "https://musicbrainz.org/recording/f151cb94-c909-46a8-ad99-fb77391abfb8";
+    const recordingLink = row("musicbrainz_recordingid").getByRole("link");
+    assert.equal(await recordingLink.getAttribute("href"), recordingUrl);
+    assert.equal(await recordingLink.innerText(), recordingUrl);
+    assert.equal(await recordingLink.getAttribute("target"), "_blank");
+    assert.equal(
+      await row("title").getByRole("link").getAttribute("href"),
+      recordingUrl,
+    );
+    const artistLinks = row("artists").getByRole("link");
+    assert.deepEqual(await artistLinks.allTextContents(), [
+      "Beth Hart",
+      "Joe Bonamassa",
+    ]);
+    assert.equal(
+      await artistLinks.nth(1).getAttribute("href"),
+      "https://musicbrainz.org/artist/984f8239-8fe1-4683-9c54-10ffb14439e9",
+    );
+    assert.equal(await row("artist").getByRole("link").count(), 0);
+    await page
+      .getByRole("button", { name: "Native tags", exact: true })
+      .click();
+    assert.ok(
+      await page.locator(`.native-group a[href="${recordingUrl}"]`).count(),
+    );
+    await page
+      .getByRole("button", { name: "Common tags", exact: true })
+      .click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > innerWidth,
+      ),
+      false,
+    );
+    await page.setViewportSize({ width: 1440, height: 1100 });
+  }
   await page
     .getByRole("textbox", { name: "Search tags" })
     .fill("impossible-tag-search");

@@ -21,6 +21,7 @@ npm run dev
 - Select or drop multiple files, switch between individual results, and remove files.
 - Parsing runs in dedicated Web Workers, terminated when files are removed.
 - Common tags, every audio format property, original native tags, embedded artwork, and parser warnings.
+- MusicBrainz IDs link to their entity pages; titles, albums, and artist names link when matching IDs are available. Ambiguous artist credits and obsolete TRM IDs remain plain text.
 - Search tag names and values, inspect nested values and binary data, and download complete metadata as JSON.
 - Native browser audio controls. Playback support depends on the browser and codec; metadata analysis works independently.
 - All processing stays on the device. There is no upload endpoint, account, analytics, remote font, or server-side processing. Results are held in memory until removed or the page is closed.
