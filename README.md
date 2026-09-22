@@ -1,6 +1,7 @@
 # audio-tag-analyzer-vite
 
 [![Build and test](https://github.com/Borewit/audio-tag-analyzer-vite/actions/workflows/ci.yml/badge.svg)](https://github.com/Borewit/audio-tag-analyzer-vite/actions/workflows/ci.yml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9abc66aa-e5de-4b3a-b69a-04e967aa7978/deploy-status)](https://app.netlify.com/sites/audio-tag-analyzer/deploys)
 
 A responsive, browser-only [Audio Tag Analyzer](https://github.com/Borewit/audio-tag-analyzer-vite), built with React, TypeScript, Vite, and [music-metadata](https://github.com/Borewit/music-metadata).
 
