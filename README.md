@@ -1,11 +1,22 @@
-# audio-tag-analyzer-vite
+# Audio Tag Analyzer
 
-[![Build and test](https://github.com/Borewit/audio-tag-analyzer-vite/actions/workflows/ci.yml/badge.svg)](https://github.com/Borewit/audio-tag-analyzer-vite/actions/workflows/ci.yml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/9abc66aa-e5de-4b3a-b69a-04e967aa7978/deploy-status)](https://app.netlify.com/sites/audio-tag-analyzer/deploys)
+**[Open the live Audio Tag Analyzer](https://audio-tag-analyzer.netlify.app/)**
 
-A responsive, browser-only [Audio Tag Analyzer](https://github.com/Borewit/audio-tag-analyzer-vite), built with React, TypeScript, Vite, and [music-metadata](https://github.com/Borewit/music-metadata).
+Audio Tag Analyzer demonstrates the capabilities of [music-metadata](https://github.com/Borewit/music-metadata). It lets you view the metadata stored in your audio files, including song titles, artists, albums, cover art, and audio format details.
 
-## Development
+Everything runs in your browser. Your files stay on your device and are never uploaded anywhere. No account is needed.
+
+![Audio Tag Analyzer showing an audio file's metadata, playback controls, and embedded cover art](docs/images/audio-tag-analyzer.png)
+
+## How to use it
+
+1. [Open the live app](https://audio-tag-analyzer.netlify.app/).
+2. Select audio files or drag and drop them onto the page.
+3. Choose a file to explore its metadata and cover art.
+
+You can search metadata by name or value, follow [MusicBrainz](https://musicbrainz.org/) links when available, and download the metadata as a JSON file. You can also listen to files supported by your browser.
+
+## Run locally
 
 Requires Node.js 22.12 or newer.
 
@@ -14,39 +25,6 @@ npm ci
 npm run dev
 ```
 
-`npm run build` checks TypeScript and builds the static site into `dist`. `npm run preview` serves that build locally. `npm test` runs the metadata formatting tests.
-
-## Features
-
-- Select or drop multiple files, switch between individual results, and remove files.
-- Parsing runs in dedicated Web Workers, terminated when files are removed.
-- Common tags, every audio format property, original native tags, embedded artwork, and parser warnings.
-- MusicBrainz IDs link to their entity pages; titles, albums, and artist names link when matching IDs are available. Ambiguous artist credits and obsolete TRM IDs remain plain text.
-- Search tag names and values, inspect nested values and binary data, and download complete metadata as JSON.
-- Native browser audio controls. Playback support depends on the browser and codec; metadata analysis works independently.
-- All processing stays on the device. There is no upload endpoint, account, analytics, remote font, or server-side processing. Results are held in memory until removed or the page is closed.
-
-## Netlify
-
-The checked-in `netlify.toml` configures Node 22, `npm run build`, and the `dist` publish directory. Import this repository into Netlify to deploy. No server functions or environment secrets are needed. An actual deployment requires a connected Netlify site/account.
-
-## Continuous integration
-
-GitHub Actions runs on pushes, pull requests, and manual dispatches. Using Node 22, it installs the locked dependencies with `npm ci`, runs unit tests, and checks TypeScript while building the production site. Successful runs retain the `dist` directory as the `audio-tag-analyzer-vite-dist` artifact for seven days. Superseded runs are canceled automatically.
-
-Browser verification remains a separate local check using the music-metadata sample files described below. Deployment is handled by Netlify.
-
 ## License
 
-MIT. See LICENSE for the original project's attribution.
-
-## Browser verification
-
-With a local server running and the music-metadata repository checked out alongside this project:
-
-```sh
-npx playwright install chromium
-node scripts/browser-check.mjs
-```
-
-Set `SAMPLE_DIR` for another location of music-metadata's `test/samples`, `CHROMIUM_PATH` for an existing browser, or `APP_URL` to test a production preview. The check covers MP3, FLAC, M4A, WAV, file switching, search, export, mobile overflow, error handling, and generated PCM audio playback. Screenshots are written to `/tmp`.
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute as needed.
