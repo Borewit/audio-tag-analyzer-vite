@@ -1,0 +1,31 @@
+version: 2
+updates:
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "06:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 20
+    versioning-strategy: increase
+    target-branch: master
+    labels:
+      - dependencies
+    groups:
+      types:
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: Europe/Amsterdam
+    open-pull-requests-limit: 10
+    target-branch: "master"
+    labels:
+      - DevOps
