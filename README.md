@@ -6,6 +6,8 @@ Audio Tag Analyzer demonstrates the capabilities of [music-metadata](https://git
 
 Everything runs in your browser. Your files stay on your device and are never uploaded anywhere. No account is needed.
 
+![Audio Tag Analyzer showing an audio file's metadata, playback controls, and embedded cover art](docs/images/audio-tag-analyzer.png)
+
 ## How to use it
 
 1. [Open the live app](https://audio-tag-analyzer.netlify.app/).
