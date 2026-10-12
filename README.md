@@ -16,6 +16,8 @@ Everything runs in your browser. Your files stay on your device and are never up
 
 You can search metadata by name or value, follow [MusicBrainz](https://musicbrainz.org/) links when available, and download the metadata as a JSON file. You can also listen to files supported by your browser.
 
+The Media details tab shows audio properties, complete media duration and overall file bitrate when available, and individual tracks with their IDs, names, codecs, languages, enabled/default/forced flags, timing, and audio or video properties. Supported formats include MP3, FLAC, M4A, Ogg, WAV, AIFF, and CAF (Apple Core Audio Format). The header artwork uses the front cover when one is available.
+
 ## Run locally
 
 Requires Node.js 22.12 or newer.

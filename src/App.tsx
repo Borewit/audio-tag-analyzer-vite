@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { selectCover } from "music-metadata";
 import type {
   IAudioMetadata,
   ICommonTagsResult,
@@ -24,7 +25,15 @@ import {
   Headphones,
   Layers,
 } from "lucide-react";
-import { bytes, display, duration, json, label } from "./metadata";
+import {
+  bytes,
+  display,
+  duration,
+  json,
+  label,
+  trackEntries,
+  trackType,
+} from "./metadata";
 import { commonMusicBrainzUrl, musicBrainzUrl } from "./musicbrainz";
 
 type Entry = {
@@ -37,7 +46,7 @@ type Section = "overview" | "common" | "format" | "artwork" | "native" | "json";
 const sections = [
   { id: "overview", title: "Overview", icon: Layers },
   { id: "common", title: "Common tags", icon: Tags },
-  { id: "format", title: "Audio details", icon: SlidersHorizontal },
+  { id: "format", title: "Media details", icon: SlidersHorizontal },
   { id: "artwork", title: "Artwork", icon: Image },
   { id: "native", title: "Native tags", icon: Code2 },
   { id: "json", title: "Raw JSON", icon: Code2 },
@@ -277,7 +286,7 @@ function Detail({ entry }: { entry: Entry }) {
   return (
     <>
       <div className="track-header">
-        <Artwork picture={common.picture?.[0]} large />
+        <Artwork picture={selectCover(common.picture) ?? undefined} large />
         <div className="track-heading">
           <div className="eyebrow">YOUR AUDIO, DECODED</div>
           <h2>
@@ -346,7 +355,7 @@ function Detail({ entry }: { entry: Entry }) {
                   : section === "native"
                     ? "Original tags, exactly as stored in the file."
                     : section === "format"
-                      ? "Technical properties of your audio."
+                      ? "Container statistics and individual audio, video, and other tracks."
                       : section === "artwork"
                         ? "Images embedded in your audio file."
                         : "The complete music-metadata result."}
@@ -469,7 +478,22 @@ function Detail({ entry }: { entry: Entry }) {
           <TagTable entries={commonEntries} query={query} common={common} />
         )}
         {section === "format" && (
-          <TagTable entries={Object.entries(format)} query={query} />
+          <>
+            <TagTable
+              entries={Object.entries(format).filter(
+                ([key]) => key !== "trackInfo",
+              )}
+              query={query}
+            />
+            {format.trackInfo.map((track, index) => (
+              <section className="native-group" key={index}>
+                <h4>
+                  {trackType(track.type)} track {index + 1}
+                </h4>
+                <TagTable entries={trackEntries(track)} query={query} />
+              </section>
+            ))}
+          </>
         )}
         {section === "native" &&
           (Object.keys(native).length ? (
@@ -669,7 +693,7 @@ export default function App() {
           </div>
           <div className="drop-copy">
             <h2>Drop your audio files here</h2>
-            <p>MP3, FLAC, M4A, OGG, WAV, AIFF, and more</p>
+            <p>MP3, FLAC, M4A, OGG, WAV, AIFF, CAF, and more</p>
           </div>
           <button className="primary" onClick={() => input.current?.click()}>
             <Plus size={18} />
