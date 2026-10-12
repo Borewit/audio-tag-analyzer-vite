@@ -1,3 +1,5 @@
+import { TrackType, type ITrackInfo } from "music-metadata";
+
 export const labels: Record<string, string> = {
   albumartist: "Album artist",
   artistsort: "Artist sort name",
@@ -22,6 +24,20 @@ export const labels: Record<string, string> = {
   tagTypes: "Tag formats",
   audioMD5: "Audio MD5",
   numberOfSamples: "Sample count",
+  containerDuration: "Media duration",
+  overallBitrate: "Overall file bitrate",
+  hasAudio: "Contains audio",
+  hasVideo: "Contains video",
+  codecId: "Codec ID",
+  samplingFrequency: "Sample rate",
+  outputSamplingFrequency: "Output sample rate",
+  bitDepth: "Bit depth",
+  frameRate: "Frame rate",
+  pixelWidth: "Pixel width",
+  pixelHeight: "Pixel height",
+  flagEnabled: "Enabled",
+  flagDefault: "Default track",
+  flagForced: "Forced track",
   replaygain_track_gain: "ReplayGain track gain",
   replaygain_album_gain: "ReplayGain album gain",
   musicbrainz_recordingid: "MusicBrainz recording ID",
@@ -34,6 +50,22 @@ export const labels: Record<string, string> = {
   musicbrainz_discid: "MusicBrainz disc ID",
   picture: "Embedded artwork",
 };
+export function trackType(type?: ITrackInfo["type"]): string {
+  const name = Object.entries(TrackType).find(
+    ([, value]) => value === type,
+  )?.[0];
+  return name
+    ? label(name)
+    : type === undefined
+      ? "Unknown"
+      : `Unknown (${type})`;
+}
+export function trackEntries(track: ITrackInfo): [string, unknown][] {
+  return Object.entries(track).map(([key, value]) => [
+    key,
+    key === "type" ? trackType(track.type) : value,
+  ]);
+}
 export function label(key: string): string {
   return (
     labels[key] ??
@@ -61,11 +93,18 @@ export function display(value: unknown, key = ""): string {
     return `${bytes(value.byteLength)} of binary data`;
   if (typeof value === "boolean") return value ? "Yes" : "No";
   if (typeof value === "number") {
-    if (key === "duration")
+    if (key === "duration" || key === "containerDuration")
       return `${duration(value)} (${Number(value.toFixed(3))} seconds)`;
-    if (key === "bitrate") return `${Math.round(value / 1000)} kbps`;
-    if (key === "sampleRate") return `${value / 1000} kHz`;
-    if (key === "bitsPerSample") return `${value}-bit`;
+    if (key === "bitrate" || key === "overallBitrate")
+      return `${Math.round(value / 1000)} kbps`;
+    if (
+      ["sampleRate", "samplingFrequency", "outputSamplingFrequency"].includes(
+        key,
+      )
+    )
+      return `${value / 1000} kHz`;
+    if (key === "bitsPerSample" || key === "bitDepth") return `${value}-bit`;
+    if (key === "frameRate") return `${value} fps`;
     return String(value);
   }
   if (Array.isArray(value))

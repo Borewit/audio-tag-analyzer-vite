@@ -45,11 +45,9 @@ for (let i = 0; i < 4; i++) {
   await page.getByRole("button", { name: "Common tags", exact: true }).click();
   if (i === 3) {
     const row = (name) =>
-      page
-        .locator(".tag-row")
-        .filter({
-          has: page.locator("code", { hasText: new RegExp(`^${name}$`) }),
-        });
+      page.locator(".tag-row").filter({
+        has: page.locator("code", { hasText: new RegExp(`^${name}$`) }),
+      });
     const recordingUrl =
       "https://musicbrainz.org/recording/f151cb94-c909-46a8-ad99-fb77391abfb8";
     const recordingLink = row("musicbrainz_recordingid").getByRole("link");
@@ -94,9 +92,10 @@ for (let i = 0; i < 4; i++) {
   await page.getByText("No tags match your search.").waitFor();
   await page.getByRole("textbox", { name: "Search tags" }).fill("");
   await page
-    .getByRole("button", { name: "Audio details", exact: true })
+    .getByRole("button", { name: "Media details", exact: true })
     .click();
   assert.ok((await page.locator(".tag-row").count()) > 3);
+  assert.ok(await page.getByRole("heading", { name: /^Audio track / }).count());
 }
 await page.locator(".file-select").first().click();
 await page.getByRole("button", { name: "Overview", exact: true }).click();
@@ -167,8 +166,35 @@ await page.waitForFunction(
   () => document.querySelector("audio").currentTime > 0,
 );
 await page.locator("audio").evaluate((audio) => audio.pause());
+// CAF often has no browser MIME type; parser selection must retain the filename.
+const caf = Buffer.alloc(68 + 8000 * 2);
+caf.write("caff", 0);
+caf.writeUInt16BE(1, 4);
+caf.write("desc", 8);
+caf.writeBigInt64BE(32n, 12);
+caf.writeDoubleBE(8000, 20);
+caf.write("lpcm", 28);
+caf.writeUInt32BE(2, 36);
+caf.writeUInt32BE(1, 40);
+caf.writeUInt32BE(1, 44);
+caf.writeUInt32BE(16, 48);
+caf.write("data", 52);
+caf.writeBigInt64BE(BigInt(caf.length - 64), 56);
+await page.locator("input[type=file]").setInputFiles({
+  name: "filename-detection.caf",
+  mimeType: "",
+  buffer: caf,
+});
+await page.locator("audio").waitFor();
+await page.getByRole("button", { name: "Media details", exact: true }).click();
+const audioTrack = page.locator(".native-group").filter({
+  has: page.getByRole("heading", { name: "Audio track 1", exact: true }),
+});
+assert.match(await audioTrack.innerText(), /Sample rate: 8 kHz/);
+assert.match(await audioTrack.innerText(), /1 seconds/);
+assert.match(await audioTrack.innerText(), /Bit depth: 16-bit/);
 assert.deepEqual(errors, []);
 await browser.close();
 console.log(
-  "Browser checks passed: four audio formats, independent results, tabs, search, JSON download, mobile overflow, malformed file, removal, and clear all.",
+  "Browser checks passed: five audio formats including CAF without a MIME type, media tracks, independent results, tabs, search, JSON download, mobile overflow, malformed file, removal, and clear all.",
 );
