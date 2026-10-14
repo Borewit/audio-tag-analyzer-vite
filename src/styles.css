@@ -19,6 +19,9 @@
 body {
   margin: 0;
 }
+.app {
+  min-height: 100vh;
+}
 button,
 input {
   font: inherit;
@@ -118,7 +121,7 @@ main {
   padding: 0 0 24px;
 }
 .intro {
-  padding: 54px 0 32px;
+  padding: 24px 0 20px;
 }
 .eyebrow {
   font-size: 10px;
@@ -136,19 +139,19 @@ main {
   border-radius: 50%;
 }
 h1 {
-  font-size: 46px;
-  letter-spacing: -1.9px;
+  font-size: 28px;
+  letter-spacing: -0.8px;
   line-height: 1.17;
   font-weight: 650;
-  margin: 15px 0 18px;
+  margin: 8px 0 10px;
 }
 h1 span {
   color: #7961ce;
 }
 .intro > p {
   color: #807c8e;
-  font-size: 14px;
-  line-height: 1.85;
+  font-size: 13px;
+  line-height: 1.6;
 }
 .dropzone {
   border: 1px dashed #c6bce6;
@@ -408,6 +411,7 @@ footer {
   font-size: 10px;
 }
 footer a {
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -647,7 +651,7 @@ audio {
 }
 .stats span {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: #7a6688;
 }
 .stats strong {
@@ -680,17 +684,17 @@ h4 {
   gap: 20px;
 }
 .tag-label {
-  font-size: 12px;
+  font-size: 14px;
   color: #756780;
 }
 .tag-row code {
   display: block;
   color: #84738f;
-  font-size: 9px;
+  font-size: 11px;
   margin-top: 3px;
 }
 .tag-value {
-  font-size: 12px;
+  font-size: 14px;
   color: #51465e;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -721,7 +725,7 @@ h4 {
 }
 .muted {
   color: #796687;
-  font-size: 11px;
+  font-size: 13px;
 }
 .quality {
   display: flex;
@@ -754,7 +758,7 @@ h4 {
 .file-details {
   margin-top: 20px;
   color: #9d8aaa;
-  font-size: 11px;
+  font-size: 13px;
 }
 summary {
   cursor: pointer;
@@ -807,7 +811,7 @@ summary {
   background: #f8f6fb;
   border-radius: 8px;
   padding: 16px;
-  font-size: 11px;
+  font-size: 13px;
   overflow: auto;
   color: #756081;
 }
@@ -851,14 +855,6 @@ summary {
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-@media (min-width: 1500px) {
-  main {
-    padding-top: 12px;
-  }
-  .intro {
-    padding-top: 62px;
   }
 }
 @media (max-width: 1304px) {
@@ -944,17 +940,14 @@ summary {
     margin: 0 18px;
   }
   .intro {
-    padding: 36px 2px 25px;
+    padding: 20px 2px 16px;
   }
   h1 {
-    font-size: 38px;
-    letter-spacing: -1.5px;
+    font-size: 24px;
+    letter-spacing: -0.6px;
   }
   .intro > p {
     font-size: 12px;
-  }
-  .desktop-break {
-    display: none;
   }
   .eyebrow {
     font-size: 8px;
@@ -1063,7 +1056,7 @@ summary {
   }
   .tag-label,
   .tag-value {
-    font-size: 11px;
+    font-size: 13px;
   }
   .tag-row code {
     overflow-wrap: anywhere;

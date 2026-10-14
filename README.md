@@ -11,7 +11,7 @@ Everything runs in your browser. Your files stay on your device and are never up
 ## How to use it
 
 1. [Open the live app](https://audio-tag-analyzer.netlify.app/).
-2. Select audio files or drag and drop them onto the page.
+2. Select audio files or drag and drop them anywhere on the page.
 3. Choose a file to explore its metadata and cover art.
 
 You can search metadata by name or value, follow [MusicBrainz](https://musicbrainz.org/) links when available, and download the metadata as a JSON file. You can also listen to files supported by your browser.
