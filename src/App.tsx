@@ -561,6 +561,7 @@ export default function App() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [selected, setSelected] = useState<string>();
   const [dragging, setDragging] = useState(false);
+  const dragDepth = useRef(0);
   const input = useRef<HTMLInputElement>(null);
   const workers = useRef(new Map<string, Worker>());
   const queue = useRef<Entry[]>([]);
@@ -621,7 +622,31 @@ export default function App() {
   }
   const active = entries.find((e) => e.id === selected);
   return (
-    <>
+    <div
+      className="app"
+      onDragEnter={(e) => {
+        if (!e.dataTransfer.types.includes("Files")) return;
+        e.preventDefault();
+        dragDepth.current += 1;
+        setDragging(true);
+      }}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes("Files")) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      }}
+      onDragLeave={() => {
+        dragDepth.current = Math.max(0, dragDepth.current - 1);
+        if (dragDepth.current === 0) setDragging(false);
+      }}
+      onDrop={(e) => {
+        dragDepth.current = 0;
+        setDragging(false);
+        if (!e.dataTransfer.types.includes("Files")) return;
+        e.preventDefault();
+        addFiles(e.dataTransfer.files);
+      }}
+    >
       <a className="skip-link" href="#main-content">
         Skip to analyzer
       </a>
@@ -650,15 +675,11 @@ export default function App() {
             <span className="tiny-dot" /> MADE FOR THE CURIOUS LISTENER
           </div>
           <h1>
-            Every file has a story.
-            <br />
-            <span>Explore yours.</span>
+            Every file has a story. <span>Explore yours.</span>
           </h1>
           <p>
             Discover the tags, artwork, and technical details hidden in your
-            audio.
-            <br className="desktop-break" /> All in your browser. All on your
-            device.
+            audio. All in your browser. All on your device.
           </p>
         </section>
         <input
@@ -672,22 +693,7 @@ export default function App() {
             e.target.value = "";
           }}
         />
-        <section
-          className={`dropzone ${dragging ? "dragging" : ""}`}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragging(true);
-          }}
-          onDragLeave={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget as Node))
-              setDragging(false);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragging(false);
-            addFiles(e.dataTransfer.files);
-          }}
-        >
+        <section className={`dropzone ${dragging ? "dragging" : ""}`}>
           <div className="upload-icon">
             <Upload size={25} strokeWidth={1.6} />
           </div>
@@ -840,10 +846,11 @@ export default function App() {
           target="_blank"
           rel="noreferrer"
         >
-          Powered by <strong>music-metadata</strong>
+          Powered by{" "}
+          <strong>music-metadata v{__MUSIC_METADATA_VERSION__}</strong>
           <ArrowUpRight size={13} />
         </a>
       </footer>
-    </>
+    </div>
   );
 }
