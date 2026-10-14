@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "lucide-react": "^1.49.0",
+    "lucide-react": "^1.55.0",
     "music-metadata": "^12.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
