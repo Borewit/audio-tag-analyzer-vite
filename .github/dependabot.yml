@@ -9,6 +9,9 @@ updates:
       timezone: Europe/Amsterdam
     open-pull-requests-limit: 20
     versioning-strategy: increase
+    cooldown:
+      exclude:
+        - music-metadata
     target-branch: master
     labels:
       - dependencies
