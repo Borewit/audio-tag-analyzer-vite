@@ -403,6 +403,12 @@ function Detail({ entry }: { entry: Entry }) {
                 </div>
               ))}
             </div>
+            <div className="tag-row">
+              <span className="tag-label">Tag headers</span>
+              <div className="tag-value">
+                {format.tagTypes.join(", ") || "None detected"}
+              </div>
+            </div>
             <div className="subheading">
               <h4>Track information</h4>
               <button
