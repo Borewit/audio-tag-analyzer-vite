@@ -110,6 +110,8 @@ export function display(value: unknown, key = ""): string {
   if (Array.isArray(value))
     return value.map((v) => display(v, key)).join(" · ");
   if (typeof value === "object") {
+    if (key === "timeBase" && "numerator" in value && "denominator" in value)
+      return `${value.numerator}/${value.denominator} seconds per tick`;
     if ("no" in value && "of" in value)
       return `${value.no ?? "—"}${value.of == null ? "" : ` / ${value.of}`}`;
     return Object.entries(value)

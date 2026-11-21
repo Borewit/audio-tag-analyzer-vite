@@ -70,6 +70,9 @@ describe("human-readable metadata", () => {
     ).toBe(
       "Sample rate: 48 kHz\nOutput sample rate: 96 kHz\nBit depth: 24-bit",
     );
+    expect(display({ numerator: 1, denominator: 48000 }, "timeBase")).toBe(
+      "1/48000 seconds per tick",
+    );
     expect(trackType(TrackType.audio)).toBe("Audio");
     expect(trackType(TrackType.subtitle)).toBe("Subtitle");
     expect(trackType(TrackType.metadata)).toBe("Metadata");
