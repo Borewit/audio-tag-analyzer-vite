@@ -158,6 +158,7 @@ function Value({
         ))}
       </div>
     );
+  if (name === "timeBase") return <span>{display(value, name)}</span>;
   if (value && typeof value === "object" && !("no" in value && "of" in value))
     return (
       <div className="nested">
